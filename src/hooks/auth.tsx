@@ -42,8 +42,6 @@ const AuthProvider: React.FC = ({ children }) => {
       password,
     });
 
-    console.log(response);
-
     const { token, user } = response.data;
 
     localStorage.setItem('@GoFluffly:token', token);

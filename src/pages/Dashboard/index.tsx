@@ -3,50 +3,50 @@ import React, { useState, useEffect } from 'react';
 
 import total from '../../assets/total.svg';
 
-import api from '../../services/api';
-
 import Header from '../../components/Header';
-
-import formatValue from '../../utils/formatValue';
 
 import {
   Container, CardContainer, Card, TableContainer,
 } from './styles';
 
-interface Transaction {
-  id: string;
-  title: string;
-  value: number;
-  formattedValue: string;
-  formattedDate: string;
-  type: 'income' | 'outcome';
-  category: { title: string };
-  // eslint-disable-next-line camelcase
-  created_at: Date;
-}
-
 interface User {
-  name: string;
+  id: string;
   balance: string;
-  avatar?: string;
+  email: string;
+  name: string;
 }
 
 const Dashboard: React.FC = () => {
   // const [transactions, setTransactions] = useState<Transaction[]>([]);
-  // const [balance, setBalance] = useState<User>(() => {
-  //   const token = localStorage.getItem('@GoFluffly:token');
-  //   const user = localStorage.getItem('@GoFluffly:user');
 
-  //   await api.post('acconts', token.)
-  // } as User);
+  function currencyFormat(num: string) {
+    const aux = Number(num);
+    return `$${aux.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}`;
+  }
+
+  const [user, setUser] = useState<User>(() => {
+    const data = localStorage.getItem('@GoFluffly:user');
+
+    if (data) {
+      const dataFormat = JSON.parse(data);
+
+      return {
+        id: dataFormat.id,
+        balance: dataFormat.balance,
+        email: dataFormat.email,
+        name: dataFormat.name,
+      };
+    }
+    return {} as User;
+  });
 
   useEffect(() => {
     async function loadTransactions(): Promise<void> {
-      // TODO
+      console.log(user);
     }
 
     loadTransactions();
-  }, []);
+  }, [user]);
 
   return (
     <>
@@ -58,7 +58,7 @@ const Dashboard: React.FC = () => {
               <p>Total</p>
               <img src={total} alt="Total" />
             </header>
-            <h1 data-testid="balance-total">R$ 4000,00</h1>
+            <h1 data-testid="balance-total">{currencyFormat(user.balance)}</h1>
           </Card>
         </CardContainer>
 
