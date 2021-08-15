@@ -1,10 +1,13 @@
 /* eslint-disable no-use-before-define */
-import React, { useRef, useCallback } from 'react';
+import React, {
+  useRef, useCallback, useState, useEffect,
+} from 'react';
 import { FormHandles } from '@unform/core';
 import { FiMail, FiLock } from 'react-icons/fi';
 
 import { Form } from '@unform/web';
 
+import * as Yup from 'yup';
 import total from '../../assets/total.svg';
 
 import api from '../../services/api';
@@ -17,26 +20,76 @@ import Button from '../../components/Button';
 import {
   Container, CardContainer, Card, DeposityContainer,
 } from './styles';
+import { useAuth } from '../../hooks/auth';
+import { useToast } from '../../hooks/toast';
 
 interface SignInFormData {
-  email: string;
   password: string;
+  value: number;
+}
+
+interface Request {
+  balance: string;
 }
 
 const Withdraw: React.FC = () => {
   const formRef = useRef<FormHandles>(null);
 
-  // const [transactions, setTransactions] = useState<Transaction[]>([]);
-  // const [balance, setBalance] = useState<Balance>({} as Balance);
+  const { user, token } = useAuth();
+  const [balance, setBalance] = useState('');
+  const { addToast } = useToast();
+  const balanceRealTime = useCallback(async () => {
+    const { id } = user;
+    const response = await api.post<Request>('acconts/FindId', {
+      id,
+    }, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    setBalance(response.data.balance);
+  }, [user, token]);
+
+  useEffect(() => {
+    balanceRealTime();
+  }, [balanceRealTime]);
+
+  function currencyFormat(num: string) {
+    const aux = Number(num);
+    return `$${aux.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}`;
+  }
 
   const handleSubmit = useCallback(
     async (data: SignInFormData) => {
       try {
-        console.log(data);
+        const schema = Yup.object().shape({
+          value: Yup.number().required('Numero é obrigatorio'),
+          password: Yup.string().required('Senha obrigatória'),
+        });
+
+        await schema.validate(data, {
+          abortEarly: false,
+        });
+
+        const response = await api.post<Request>('acconts/withdraw', {
+          passwordAccont: data.password,
+          value: Number(data.value),
+        }, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        addToast({
+          type: 'success',
+          title: 'Sucesso no deposito',
+        });
+
+        setBalance(response.data.balance);
       } catch (err) {
         console.log(err);
+        addToast({
+          type: 'error',
+          title: 'Error no deposito',
+        });
       }
-    }, [],
+    }, [addToast, setBalance, token],
   );
 
   return (
@@ -49,7 +102,7 @@ const Withdraw: React.FC = () => {
               <p>Total</p>
               <img src={total} alt="Total" />
             </header>
-            <h1 data-testid="balance-total">R$ 4000,00</h1>
+            <h1 data-testid="balance-total">{currencyFormat(balance)}</h1>
           </Card>
         </CardContainer>
         <DeposityContainer>
