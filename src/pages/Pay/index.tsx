@@ -15,6 +15,7 @@ import Button from '../../components/Button';
 import {
   Container, CardContainer, Card, DeposityContainer,
 } from './styles';
+import { useAuth } from '../../hooks/auth';
 
 interface Transaction {
   id: string;
@@ -33,11 +34,35 @@ interface SignInFormData {
   password: string;
 }
 
+interface Request {
+  balance: string;
+}
 const Pay: React.FC = () => {
   const formRef = useRef<FormHandles>(null);
 
-  // const [transactions, setTransactions] = useState<Transaction[]>([]);
-  // const [balance, setBalance] = useState<Balance>({} as Balance);
+  const { user, token } = useAuth();
+  const [balance, setBalance] = useState('');
+
+  const balanceRealTime = useCallback(async () => {
+    const { id } = user;
+    const response = await api.post<Request>('acconts/FindId', {
+      id,
+    }, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    setBalance(response.data.balance);
+  }, [user, token]);
+
+  balanceRealTime();
+
+  useEffect(() => {
+    balanceRealTime();
+  }, [balanceRealTime]);
+
+  function currencyFormat(num: string) {
+    const aux = Number(num);
+    return `$${aux.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}`;
+  }
 
   const handleSubmit = useCallback(
     async (data: SignInFormData) => {
@@ -59,7 +84,7 @@ const Pay: React.FC = () => {
               <p>Total</p>
               <img src={total} alt="Total" />
             </header>
-            <h1 data-testid="balance-total">R$ 4000,00</h1>
+            <h1 data-testid="balance-total">{currencyFormat(balance)}</h1>
           </Card>
         </CardContainer>
         <DeposityContainer>

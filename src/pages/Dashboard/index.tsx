@@ -1,65 +1,63 @@
 /* eslint-disable no-use-before-define */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 
 import total from '../../assets/total.svg';
 
 import Header from '../../components/Header';
+import { useAuth } from '../../hooks/auth';
+import api from '../../services/api';
 
 import {
   Container, CardContainer, Card, TableContainer,
 } from './styles';
 
-interface User {
-  id: string;
+interface Request {
   balance: string;
-  email: string;
-  name: string;
 }
 
 const Dashboard: React.FC = () => {
-  // const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const { user, token } = useAuth();
+  const [balance, setBalance] = useState('');
+
+  const balanceRealTime = useCallback(async () => {
+    const { id } = user;
+    const response = await api.post<Request>('acconts/FindId', {
+      id,
+    }, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    setBalance(response.data.balance);
+  }, [user, token]);
+
+  balanceRealTime();
+
+  useEffect(() => {
+    balanceRealTime();
+  }, [balanceRealTime]);
 
   function currencyFormat(num: string) {
     const aux = Number(num);
     return `$${aux.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}`;
   }
 
-  const [user, setUser] = useState<User>(() => {
-    const data = localStorage.getItem('@GoFluffly:user');
-
-    if (data) {
-      const dataFormat = JSON.parse(data);
-
-      return {
-        id: dataFormat.id,
-        balance: dataFormat.balance,
-        email: dataFormat.email,
-        name: dataFormat.name,
-      };
-    }
-    return {} as User;
-  });
-
-  useEffect(() => {
-    async function loadTransactions(): Promise<void> {
-      console.log(user);
-    }
-
-    loadTransactions();
-  }, [user]);
-
   return (
     <>
       <Header />
       <Container>
+
         <CardContainer>
           <Card total>
             <header>
               <p>Total</p>
               <img src={total} alt="Total" />
             </header>
-            <h1 data-testid="balance-total">{currencyFormat(user.balance)}</h1>
+            <h1 data-testid="balance-total">{currencyFormat(balance)}</h1>
           </Card>
+          <h1>
+            Bem vindo
+            {' '}
+            {user.name}
+          </h1>
         </CardContainer>
 
         <TableContainer>
