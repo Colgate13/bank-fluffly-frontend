@@ -23,7 +23,7 @@ import {
 import { useAuth } from '../../hooks/auth';
 import { useToast } from '../../hooks/toast';
 
-interface SignInFormData {
+interface FormData {
   password: string;
   value: number;
 }
@@ -58,7 +58,7 @@ const Withdraw: React.FC = () => {
   }
 
   const handleSubmit = useCallback(
-    async (data: SignInFormData) => {
+    async (data: FormData) => {
       try {
         const schema = Yup.object().shape({
           value: Yup.number().required('Numero é obrigatorio'),
