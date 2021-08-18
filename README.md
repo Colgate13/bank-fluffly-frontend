@@ -10,15 +10,26 @@
   <a href="#memo-license">License</a>
 </p>   
    
-   
 ## :notebook: About this Project
 
 It is a project to practice. A bank can create a user account, deposit, withdraw and make transactions for other accounts
 
+## Technologies 🐱‍🏍🎂
+
+- [Typeorm](https://typeorm.io/#/)
+- [Jest](https://jestjs.io/)
+- [JWT](https://jwt.io/)
+- [Axios](https://github.com/axios/axios) - HTTP Client
+- [ESlint](https://eslint.org/) - Linter
+- [Prettier](https://prettier.io/) - Code Formatter
+- [React](https://pt-br.reactjs.org/)
+- [React Navigation](https://reactnavigation.org/)
+- [styled-components](https://www.styled-components.com/)
+- [Yup](https://github.com/jquense/yup)
+- [typescript](https://www.typescriptlang.org/)
+- [yarn](https://yarnpkg.com/)
 
 ### Installing
-
-
 
 **Installing dependencies**
 
@@ -41,23 +52,7 @@ or
 $ npm start
 ```
 
-## Technologies 🐱‍🏍🎂
-
-- [Typeorm](https://typeorm.io/#/)
-- [Jest](https://jestjs.io/)
-- [JWT](https://jwt.io/)
-- [Axios](https://github.com/axios/axios) - HTTP Client
-- [ESlint](https://eslint.org/) - Linter
-- [Prettier](https://prettier.io/) - Code Formatter
-- [React](https://pt-br.reactjs.org/)
-- [React Navigation](https://reactnavigation.org/)
-- [styled-components](https://www.styled-components.com/)
-- [Yup](https://github.com/jquense/yup)
-- [typescript](https://www.typescriptlang.org/)
-- [yarn](https://yarnpkg.com/)
-
 ------------------
-
 ## License
 
 MIT [LICENSE](LICENSE.md)
