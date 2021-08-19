@@ -116,7 +116,7 @@ const Pay: React.FC = () => {
             <h1>Pay with Keyfree</h1>
             <Input name="keyfree" type="text" icon={FiMail} placeholder="KeyFree of recipient" />
             <Input name="message" type="text" icon={FiEye} placeholder="Message" />
-            <Input name="value" type="number" icon={FiAirplay} placeholder="Value" />
+            <Input step="0.01" name="value" type="number" icon={FiAirplay} placeholder="Value" />
             <Input
               name="password"
               icon={FiLock}

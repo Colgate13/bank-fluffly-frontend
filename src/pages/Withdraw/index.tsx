@@ -109,7 +109,7 @@ const Withdraw: React.FC = () => {
           <Form ref={formRef} onSubmit={handleSubmit}>
             <h1>Withdraw</h1>
 
-            <Input name="value" type="number" icon={FiMail} placeholder="Value" />
+            <Input step="0.01" name="value" type="number" icon={FiMail} placeholder="Value" />
             <Input
               name="password"
               icon={FiLock}
