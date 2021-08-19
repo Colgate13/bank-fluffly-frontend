@@ -111,7 +111,7 @@ const Deposity: React.FC = () => {
           <Form ref={formRef} onSubmit={handleSubmit}>
             <h1>Deposity</h1>
 
-            <Input name="value" type="number" icon={FiPlus} placeholder="Value" />
+            <Input step="0.01" name="value" type="number" icon={FiPlus} placeholder="Value" />
             <Input
               name="password"
               icon={FiLock}
